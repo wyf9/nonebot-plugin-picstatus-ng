@@ -56,7 +56,7 @@ def make_file_router(
     prefix_omit: str = "",
 ) -> CKRouterFunc:
     @log_router_err()
-    @make_real_path_router
+    @make_real_path_router  # ty:ignore[invalid-argument-type]
     async def router(request: "Request", **_):
         url = URL(request.url)
         query_path = url.query.get(query_name, "") if query_name else url.path[1:]

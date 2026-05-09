@@ -20,7 +20,7 @@ from .config import BG_PRELOAD_CACHE_DIR, DEFAULT_BG_PATH, config
 if sys.version_info >= (3, 11):
     from asyncio.taskgroups import TaskGroup
 else:
-    from taskgroup import TaskGroup
+    from taskgroup import TaskGroup  # ty:ignore[unresolved-import]
 
 
 class BgBytesData(NamedTuple):
@@ -381,7 +381,7 @@ class BgPreloader:
             bg = await self.background_queue.get()
             self.set_defer_preload()
             if (not isinstance(bg, BgFileData)) or (bg := read_cached_bg_file(bg)):
-                return bg
+                return bg  # ty:ignore[invalid-return-type]
 
         logger.error("Unable to get an background image, falling back to local")
         return await get_one_fallback()
@@ -393,7 +393,7 @@ class BgPreloader:
             bg = await self.background_queue.get()
             self.set_defer_preload()
             if (not isinstance(bg, BgFileData)) or (bg := read_cached_bg_file(bg)):
-                return bg
+                return bg  # ty:ignore[invalid-return-type]
 
         # normally all items in queue should be valid
         # if they not, we should fetch

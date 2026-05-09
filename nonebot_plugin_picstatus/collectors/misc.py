@@ -73,7 +73,7 @@ async def system_run_time() -> str:
 
 @first_time_collector()
 async def nonebot_version() -> str:
-    return nonebot.__version__
+    return nonebot.__version__ or 'unknown'
 
 
 @first_time_collector()

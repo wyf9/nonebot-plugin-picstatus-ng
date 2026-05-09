@@ -118,7 +118,7 @@ def functional_collector(cls: type[Collector], name: str | None = None):
         if not collector_name:
             raise ValueError("name must be provided")
 
-        class Collector(cls):
+        class Collector(cls):  # ty:ignore[unsupported-base]
             async def _get(self) -> Any:
                 return await func()
 

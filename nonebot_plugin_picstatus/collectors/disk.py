@@ -2,7 +2,10 @@ from dataclasses import dataclass
 from typing import TypeAlias
 
 import psutil
-from psutil._common import sdiskio, sdiskpart
+try:
+    from psutil._common import sdiskio, sdiskpart  # ty:ignore[unresolved-import]
+except ImportError:
+    from psutil._ntuples import sdiskio, sdiskpart
 
 from ..config import config
 from ..util import match_list_regexp

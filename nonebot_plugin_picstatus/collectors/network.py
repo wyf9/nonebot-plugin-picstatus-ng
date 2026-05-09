@@ -5,7 +5,10 @@ from typing import TypeAlias
 
 import psutil
 from httpx import AsyncClient, ReadTimeout
-from psutil._common import snetio
+try:
+    from psutil._common import snetio  # ty:ignore[unresolved-import]
+except ImportError:
+    from psutil._ntuples import snetio
 
 from ..config import TestSiteCfg, config
 from ..util import match_list_regexp

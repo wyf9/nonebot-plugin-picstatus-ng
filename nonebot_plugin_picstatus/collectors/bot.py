@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from nonebot.adapters import Bot as BaseBot
 
 try:
-    from nonebot.adapters.onebot.v11 import Bot as OBV11Bot
+    from nonebot.adapters.onebot.v11 import Bot as OBV11Bot  # ty:ignore[unresolved-import]
 except ImportError:
     OBV11Bot = None
 
