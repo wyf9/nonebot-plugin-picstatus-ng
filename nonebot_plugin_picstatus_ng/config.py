@@ -1,18 +1,20 @@
-import os
 import shutil
 from pathlib import Path
 from typing import Literal
 
-from nonebot import get_plugin_config
+from cookit.nonebot.localstore import ensure_localstore_path_config
+from nonebot import get_plugin_config, logger
 from nonebot.compat import type_validate_python
 from nonebot_plugin_localstore import get_plugin_cache_dir
 from pydantic import AnyHttpUrl, BaseModel, Field
 
-os.environ.setdefault("LOCALSTORE_USE_CWD", "true")
-
-from cookit.nonebot.localstore import ensure_localstore_path_config  # noqa: E402
-
-ensure_localstore_path_config()
+try:
+    ensure_localstore_path_config()
+except RuntimeError:
+    logger.opt(colors=True).warning(
+        "<yellow>localstore path not configured, "
+        "set LOCALSTORE_USE_CWD=True to use current working directory</yellow>",
+    )
 
 CACHE_DIR = get_plugin_cache_dir()
 

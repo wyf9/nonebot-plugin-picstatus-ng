@@ -62,7 +62,7 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
 
 不多说，直接看图！
 
-### 🖼 效果图
+### 📷️ 效果图
 
 <details>
   <summary>点击展开</summary>
@@ -192,9 +192,10 @@ Telegram：[@lgc2333](https://t.me/lgc2333)
 
 ## 📝 更新日志
 
-### 2.2.4
+### 2.2.4 & 2.2.5
 
 - 修复 `ensure_localstore_path_config()` 阻止插件加载
+- actually cannot use os environ bro, just catch it 🤓
 
 ### 2.2.3
 
