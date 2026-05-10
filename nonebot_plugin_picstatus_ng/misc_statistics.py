@@ -2,13 +2,11 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Any
 
-from cookit.loguru import log_exception_warning
+from httpx import AsyncClient
 from nonebot import get_driver, logger
 from nonebot.adapters import Bot as BaseBot, Event as BaseEvent
 from nonebot.message import event_preprocessor
 from nonebot.typing import T_State
-from nonebot_plugin_alconna import image_fetch
-from nonebot_plugin_alconna.uniseg import Image
 from nonebot_plugin_uninfo import User, get_interface
 
 from .config import config
@@ -100,18 +98,32 @@ if config.ps_count_message_sent_event is not True:
             send_num[bot.self_id] += 1
 
 
+async def _fetch_avatar(url: str) -> bytes | None:
+    async with AsyncClient(
+        follow_redirects=True,
+        proxy=config.proxy,
+        timeout=config.ps_req_timeout,
+    ) as cli:
+        try:
+            resp = await cli.get(url)
+            resp.raise_for_status()
+            return resp.content
+        except Exception:
+            return None
+
+
 async def cache_bot_avatar(avatar: str, bot: BaseBot, event: BaseEvent, state: T_State):
-    try:
-        img = await image_fetch(event, bot, state, Image(url=avatar))
-    except Exception as e:
-        log_exception_warning(e, f"Failed to get avatar of bot {bot.self_id}")
-        return None
-    else:
-        if not img:
-            logger.warning(
-                f"Cannot get avatar of bot {bot.self_id}"
-                f" because image_fetch returned None",
-            )
+    img = await _fetch_avatar(avatar)
+    if not img:
+        logger.warning(
+            f"Failed to fetch avatar from `{avatar}`, "
+            f"trying q.qlogo.cn fallback",
+        )
+        img = await _fetch_avatar(
+            f"https://q.qlogo.cn/headimg_dl?dst_uin={bot.self_id}&spec=160",
+        )
+    if not img:
+        logger.warning(f"Failed to get avatar of bot {bot.self_id}")
     bot_avatar_cache[bot.self_id] = img
     return img
 
