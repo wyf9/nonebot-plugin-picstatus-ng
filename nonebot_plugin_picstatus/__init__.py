@@ -53,11 +53,11 @@ if config.ps_only_su:
 
 __version__ = "2.2.2"
 __plugin_meta__ = PluginMetadata(
-    name="PicStatus",
+    name="PicStatus-ng",
     description="以图片形式显示当前设备的运行状态",
     usage=usage,
     type="application",
-    homepage="https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus",
+    homepage="https://github.com/wyf9/nonebot-plugin-picstatus-ng",
     config=ConfigModel,
     supported_adapters=inherit_supported_adapters(
         "nonebot_plugin_alconna",

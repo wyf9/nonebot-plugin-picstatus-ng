@@ -1,8 +1,11 @@
 [project]
-name = "nonebot-plugin-picstatus"
+name = "nonebot-plugin-picstatus-ng"
 dynamic = ["version"]
 description = "A NoneBot2 plugin generates a picture which shows the status of current device"
-authors = [{ name = "LgCookie", email = "lgc2333@126.com" }]
+authors = [
+    { name = "LgCookie", email = "lgc2333@126.com" },
+    { name = "wyf9", email = "wyf9@wyf9.top" },
+]
 dependencies = [
     "nonebot2>=2.4.3",
     "nonebot-plugin-apscheduler>=0.5.0",
@@ -24,7 +27,7 @@ readme = "README.md"
 license = { text = "MIT" }
 
 [project.urls]
-homepage = "https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus"
+homepage = "https://github.com/wyf9/nonebot-plugin-picstatus-ng"
 
 [build-system]
 requires = ["hatchling"]

@@ -19,8 +19,9 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json" alt="uv">
 </a>
 <a href="https://wakatime.com/badge/user/b61b0f9a-f40b-4c82-bc51-0a75c67bfccf/project/bfec6993-aa9e-42fb-9f3e-53a5d4739373">
-  <img src="https://wakatime.com/badge/user/b61b0f9a-f40b-4c82-bc51-0a75c67bfccf/project/bfec6993-aa9e-42fb-9f3e-53a5d4739373.svg" alt="wakatime">
+  <img src="https://wakatime.com/badge/user/b61b0f9a-f40b-4c82-bc51-0a75c67bfccf/project/bfec6993-aa9e-42fb-9f3e-53a5d4739373.svg" alt="wakatime (lgc2333)">
 </a>
+<img src="https://hackatime.hackclub.com/api/v1/badge/U0922T3T2UX/wyf9/nonebot-plugin-picstatus" alt="hackatime (wyf9)">
 
 <br />
 
@@ -28,15 +29,16 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/lgc-NB2Dev/readme/main/template/pyd-v1-or-v2.json" alt="Pydantic Version 1 Or 2" >
 </a>
 <a href="./LICENSE">
-  <img src="https://img.shields.io/github/license/lgc2333/nonebot-plugin-picstatus.svg" alt="license">
+  <img src="https://img.shields.io/github/license/wyf9/nonebot-plugin-picstatus.svg" alt="license">
 </a>
-<a href="https://pypi.python.org/pypi/nonebot-plugin-picstatus">
+<!-- <a href="https://pypi.python.org/pypi/nonebot-plugin-picstatus">
   <img src="https://img.shields.io/pypi/v/nonebot-plugin-picstatus.svg" alt="pypi">
 </a>
 <a href="https://pypi.python.org/pypi/nonebot-plugin-picstatus">
   <img src="https://img.shields.io/pypi/dm/nonebot-plugin-picstatus" alt="pypi download">
-</a>
+</a> -->
 
+<!--
 <br />
 
 <a href="https://registry.nonebot.dev/plugin/nonebot-plugin-picstatus:nonebot_plugin_picstatus">
@@ -44,15 +46,23 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
 </a>
 <a href="https://registry.nonebot.dev/plugin/nonebot-plugin-picstatus:nonebot_plugin_picstatus">
   <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fnbbdg.lgc2333.top%2Fplugin-adapters%2Fnonebot-plugin-picstatus" alt="Supported Adapters">
-</a>
+</a> -->
 
 </div>
+
+## Fork 说明
+
+由于本项目原作者 lgc2333 存档了项目，而我在安装此插件时遇到了导入错误，故创建本 Fork
+
+不会对项目进行大幅度的修改，仅小功能优化 / Bug 修复
+
+*联系: [wyf9.top/c](https://wyf9.top/c)*
 
 ## 📖 介绍
 
 不多说，直接看图！
 
-### 效果图
+### 🖼 效果图
 
 <details>
   <summary>点击展开</summary>
@@ -62,7 +72,7 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
 
 </details>
 
-## 💿 安装
+## 💿 安装 (原项目)
 
 以下提到的方法 任选**其一** 即可
 
@@ -127,13 +137,13 @@ plugins = [
 
 ## ⚙️ 配置
 
-### 见 [.env.example](https://github.com/lgc2333/nonebot-plugin-picstatus/blob/master/.env.example)
+### 见 [.env.example](./.env.example)
 
 ## 🎨 扩展
 
 想知道如何为插件新增数据源、图片模板与背景图来源的话，请参考下方示例
 
-### 见 [examples/external_example](https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus/tree/master/examples/external_example)
+### 见 [examples/external_example](./examples/external_example)
 
 ## 🎉 使用
 
@@ -141,7 +151,7 @@ plugins = [
 可以在消息后面跟一张图片或者回复一张图片来自定义背景图，默认为随机背景图  
 更多自定义项参见 [配置](#️-配置)
 
-## 📞 联系
+## 📞 联系 (原项目)
 
 QQ：3076823485  
 Telegram：[@lgc2333](https://t.me/lgc2333)  
@@ -166,13 +176,20 @@ Telegram：[@lgc2333](https://t.me/lgc2333)
 
 - 背景图来源
 
-## 💰 赞助
+## 💰 赞助 (原项目)
 
 **[赞助我](https://blog.lgc2333.top/donate)**
 
 感谢大家的赞助！你们的赞助将是我继续创作的动力！
 
 ## 📝 更新日志
+
+### 2.2.3
+
+- 修复 psutil 新版本的导入错误
+- 现在允许将 `PS_BG_PROVIDER` 直接设置为 URL 来调用外部图片 API *(仅支持 static / 302 返回，不支持 json 返回)*
+
+---
 
 ### 2.2.2
 
