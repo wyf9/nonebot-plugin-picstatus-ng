@@ -1,12 +1,16 @@
+import os
 import shutil
 from pathlib import Path
 from typing import Literal
 
-from cookit.nonebot.localstore import ensure_localstore_path_config
 from nonebot import get_plugin_config
 from nonebot.compat import type_validate_python
 from nonebot_plugin_localstore import get_plugin_cache_dir
 from pydantic import AnyHttpUrl, BaseModel, Field
+
+os.environ.setdefault("LOCALSTORE_USE_CWD", "true")
+
+from cookit.nonebot.localstore import ensure_localstore_path_config  # noqa: E402
 
 ensure_localstore_path_config()
 
