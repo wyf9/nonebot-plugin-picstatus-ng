@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING, Any
 import jinja2 as jj
 from cookit.jinja import make_register_jinja_filter_deco
 from nonebot import get_plugin_config, require
-from nonebot_plugin_picstatus.templates import pic_template
-from nonebot_plugin_picstatus.templates.pw_render import (
+from nonebot_plugin_picstatus_ng.templates import pic_template
+from nonebot_plugin_picstatus_ng.templates.pw_render import (
     ROUTE_URL,
     add_background_router,
     add_root_router,
@@ -19,19 +19,19 @@ from nonebot_plugin_picstatus.templates.pw_render import (
 from pydantic import BaseModel
 
 # 添加自定义图片模板示例
-# 示例应用例请见 https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus/blob/master/nonebot_plugin_picstatus/templates/default/__init__.py
+# 示例应用例请见 https://github.com/wyf9/nonebot-plugin-picstatus-ng/blob/master/nonebot_plugin_picstatus_ng/templates/default/__init__.py
 
 # 可以使用你喜欢的任意库来绘图
 # 示例使用 playwright，你也可以使用 Pillow 等
 # 本插件中自带一些使用 playwright 时绘图有帮助的工具函数
-# 详见 https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus/blob/master/nonebot_plugin_picstatus/templates/pw_render.py
+# 详见 https://github.com/wyf9/nonebot-plugin-picstatus-ng/blob/master/nonebot_plugin_picstatus_ng/templates/pw_render.py
 
 require("nonebot_plugin_htmlrender")
 
 from nonebot_plugin_htmlrender import get_new_page
 
 if TYPE_CHECKING:
-    from nonebot_plugin_picstatus.bg_provider import BgBytesData
+    from nonebot_plugin_picstatus_ng.bg_provider import BgBytesData
 
 RES_DIR = Path(__file__).parent / "res"
 

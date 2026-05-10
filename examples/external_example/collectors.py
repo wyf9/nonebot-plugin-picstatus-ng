@@ -1,7 +1,7 @@
 import random
 from typing_extensions import override
 
-from nonebot_plugin_picstatus.collectors import (
+from nonebot_plugin_picstatus_ng.collectors import (
     BaseTimeBasedCounterCollector,
     NormalTimeBasedCounterCollector,
     PeriodicTimeBasedCounterCollector,
@@ -12,7 +12,7 @@ from nonebot_plugin_picstatus.collectors import (
 )
 
 # 添加自定义数据源展示
-# 实际应用例请见 https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus/tree/master/nonebot_plugin_picstatus/collectors
+# 实际应用例请见 https://github.com/wyf9/nonebot-plugin-picstatus-ng/tree/master/nonebot_plugin_picstatus_ng/collectors
 
 # PicStatus 内置了三种可以直接用装饰器注册的 collector
 

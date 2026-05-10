@@ -10,7 +10,7 @@
   <img src="https://raw.githubusercontent.com/lgc-NB2Dev/readme/main/template/plugin.svg" alt="NoneBotPluginText">
 </p>
 
-# NoneBot-Plugin-PicStatus
+# NoneBot-Plugin-PicStatus-Ng
 
 _✨ 运行状态图片版 for NoneBot2 ✨_
 
@@ -21,7 +21,7 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
 <a href="https://wakatime.com/badge/user/b61b0f9a-f40b-4c82-bc51-0a75c67bfccf/project/bfec6993-aa9e-42fb-9f3e-53a5d4739373">
   <img src="https://wakatime.com/badge/user/b61b0f9a-f40b-4c82-bc51-0a75c67bfccf/project/bfec6993-aa9e-42fb-9f3e-53a5d4739373.svg" alt="wakatime (lgc2333)">
 </a>
-<img src="https://hackatime.hackclub.com/api/v1/badge/U0922T3T2UX/wyf9/nonebot-plugin-picstatus" alt="hackatime (wyf9)">
+<img src="https://hackatime.hackclub.com/api/v1/badge/U0922T3T2UX/wyf9/nonebot-plugin-picstatus-ng" alt="hackatime (wyf9)">
 
 <br />
 
@@ -29,7 +29,7 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/lgc-NB2Dev/readme/main/template/pyd-v1-or-v2.json" alt="Pydantic Version 1 Or 2" >
 </a>
 <a href="./LICENSE">
-  <img src="https://img.shields.io/github/license/wyf9/nonebot-plugin-picstatus.svg" alt="license">
+  <img src="https://img.shields.io/github/license/wyf9/nonebot-plugin-picstatus-ng.svg" alt="license">
 </a>
 <!-- <a href="https://pypi.python.org/pypi/nonebot-plugin-picstatus">
   <img src="https://img.shields.io/pypi/v/nonebot-plugin-picstatus.svg" alt="pypi">
@@ -81,7 +81,7 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
 在 nonebot2 项目的根目录下打开命令行, 输入以下指令即可安装
 
 ```bash
-nb plugin install nonebot-plugin-picstatus
+nb plugin install nonebot-plugin-picstatus-ng
 ```
 
 </details>
@@ -91,10 +91,18 @@ nb plugin install nonebot-plugin-picstatus
 在 nonebot2 项目的插件目录下, 打开命令行, 根据你使用的包管理器, 输入相应的安装命令
 
 <details>
+<summary>uv</summary>
+
+```bash
+uv add nonebot-plugin-picstatus-ng
+```
+
+</details>
+<details>
 <summary>pip</summary>
 
 ```bash
-pip install nonebot-plugin-picstatus
+pip install nonebot-plugin-picstatus-ng
 ```
 
 </details>
@@ -102,7 +110,7 @@ pip install nonebot-plugin-picstatus
 <summary>pdm</summary>
 
 ```bash
-pdm add nonebot-plugin-picstatus
+pdm add nonebot-plugin-picstatus-ng
 ```
 
 </details>
@@ -110,7 +118,7 @@ pdm add nonebot-plugin-picstatus
 <summary>poetry</summary>
 
 ```bash
-poetry add nonebot-plugin-picstatus
+poetry add nonebot-plugin-picstatus-ng
 ```
 
 </details>
@@ -118,7 +126,7 @@ poetry add nonebot-plugin-picstatus
 <summary>conda</summary>
 
 ```bash
-conda install nonebot-plugin-picstatus
+conda install nonebot-plugin-picstatus-ng
 ```
 
 </details>
@@ -129,7 +137,7 @@ conda install nonebot-plugin-picstatus
 [tool.nonebot]
 plugins = [
     # ...
-    "nonebot_plugin_picstatus"
+    "nonebot_plugin_picstatus_ng"
 ]
 ```
 

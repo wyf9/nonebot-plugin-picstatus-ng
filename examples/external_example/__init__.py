@@ -2,7 +2,7 @@
 
 from nonebot import require
 
-require("nonebot_plugin_picstatus")  # 别忘 require
+require("nonebot_plugin_picstatus_ng")  # 别忘 require
 
 from . import (
     bg_provider as bg_provider,

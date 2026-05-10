@@ -1,11 +1,11 @@
 from collections.abc import AsyncIterator
 
 from httpx import AsyncClient
-from nonebot_plugin_picstatus.bg_provider import BgData, bg_provider, resp_to_bg_data
-from nonebot_plugin_picstatus.config import config
+from nonebot_plugin_picstatus_ng.bg_provider import BgData, bg_provider, resp_to_bg_data
+from nonebot_plugin_picstatus_ng.config import config
 
 # 添加自定义背景源演示
-# 实际应用例请见 https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus/blob/master/nonebot_plugin_picstatus/bg_provider.py
+# 实际应用例请见 https://github.com/wyf9/nonebot-plugin-picstatus-ng/blob/master/nonebot_plugin_picstatus/bg_provider.py
 
 
 # 需要用 bg_provider 装饰器注册函数为背景源
