@@ -72,9 +72,9 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
 
 </details>
 
-## 💿 安装 (原项目)
+## 💿 安装
 
-以下提到的方法 任选**其一** 即可
+以下提到的方法 任选 **其一** 即可
 
 <details open>
 <summary>[推荐] 使用 nb-cli 安装</summary>
@@ -91,7 +91,7 @@ nb plugin install nonebot-plugin-picstatus-ng
 在 nonebot2 项目的插件目录下, 打开命令行, 根据你使用的包管理器, 输入相应的安装命令
 
 <details>
-<summary>uv</summary>
+<summary>[推荐] uv</summary>
 
 ```bash
 uv add nonebot-plugin-picstatus-ng
@@ -145,19 +145,19 @@ plugins = [
 
 ## ⚙️ 配置
 
-### 见 [.env.example](./.env.example)
+### 见 [.env.example](https://github.com/wyf9/nonebot-plugin-picstatus-ng/blob/master/.env.example)
 
 ## 🎨 扩展
 
 想知道如何为插件新增数据源、图片模板与背景图来源的话，请参考下方示例
 
-### 见 [examples/external_example](./examples/external_example)
+### 见 [examples/external_example](https://github.com/wyf9/nonebot-plugin-picstatus-ng/blob/master/examples/external_example)
 
 ## 🎉 使用
 
 使用指令 `运行状态`（或者 `状态` / `zt` / `yxzt` / `status`，可修改）来触发插件功能  
 可以在消息后面跟一张图片或者回复一张图片来自定义背景图，默认为随机背景图  
-更多自定义项参见 [配置](#️-配置)
+更多自定义项参见 [配置](https://github.com/wyf9/nonebot-plugin-picstatus-ng/blob/master/.env.example)
 
 ## 📞 联系 (原项目)
 
@@ -191,6 +191,10 @@ Telegram：[@lgc2333](https://t.me/lgc2333)
 感谢大家的赞助！你们的赞助将是我继续创作的动力！
 
 ## 📝 更新日志
+
+### 2.2.4
+
+- 修复 `ensure_localstore_path_config()` 阻止插件加载
 
 ### 2.2.3
 
