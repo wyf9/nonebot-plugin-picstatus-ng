@@ -235,8 +235,41 @@ async def none(num: int):
         yield create_none_bg()
 
 
+async def _fetch_bg_from_url(url: str, num: int) -> AsyncIterable[BgData]:
+    sem = aio.Semaphore(4)
+    async with AsyncClient(
+        follow_redirects=True,
+        proxy=config.proxy,
+        timeout=config.ps_req_timeout,
+    ) as cli:
+        queue: aio.Queue[BgData | None] = aio.Queue()
+
+        async def fetch_one():
+            async with sem:
+                with warning_suppress("Failed to fetch image from url"):
+                    x = resp_to_bg_data(
+                        (await cli.get(url)).raise_for_status(),
+                    )
+                    await queue.put(x)
+
+        async def run_tasks():
+            await aio.gather(*(fetch_one() for _ in range(num)))
+            await queue.put(None)
+
+        async with TaskGroup() as t:
+            t.create_task(run_tasks())
+            while (x := await queue.get()) is not None:
+                yield x
+
+
 async def fetch_bg(num: int) -> AsyncIterable[BgData]:
-    if config.ps_bg_provider not in registered_bg_providers:
+    provider = config.ps_bg_provider
+    if provider.startswith(("http://", "https://")):
+        async for x in _fetch_bg_from_url(provider, num):
+            yield x
+        return
+
+    if provider not in registered_bg_providers:
         logger.warning(
             f"Unknown background provider `{config.ps_bg_provider}`, fallback to local",
         )
