@@ -56,7 +56,7 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
 
 不会对项目进行大幅度的修改，仅小功能优化 / Bug 修复
 
-*联系: [wyf9.top/c](https://wyf9.top/c)*
+*联系: [Persoanl (Question)](https://wyf9.top/c) / [Team (Chat)](https://wss.moe/c)*
 
 ## 📖 介绍
 
@@ -196,6 +196,7 @@ Telegram：[@lgc2333](https://t.me/lgc2333)
 
 - 修复 psutil 新版本的导入错误
 - 现在允许将 `PS_BG_PROVIDER` 直接设置为 URL 来调用外部图片 API *(仅支持 static / 302 返回，不支持 json 返回)*
+- 在使用传统方式获取 Bot 头像失败后尝试直接从 `https://q.qlogo.cn/headimg_dl?dst_uin={bot.self_id}&spec=160` 拉取
 
 ---
 

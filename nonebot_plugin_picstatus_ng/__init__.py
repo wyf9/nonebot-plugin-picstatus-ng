@@ -51,7 +51,7 @@ if config.ps_need_at:
 if config.ps_only_su:
     usage += "\n注意：仅SuperUser可以使用此指令"
 
-__version__ = "2.2.2"
+__version__ = "2.2.3"
 __plugin_meta__ = PluginMetadata(
     name="PicStatus-ng",
     description="以图片形式显示当前设备的运行状态",
@@ -63,5 +63,5 @@ __plugin_meta__ = PluginMetadata(
         "nonebot_plugin_alconna",
         "nonebot_plugin_uninfo",
     ),
-    extra={"License": "MIT", "Author": "LgCookie"},
+    extra={"License": "MIT", "Author": "LgCookie & wyf9"},
 )
