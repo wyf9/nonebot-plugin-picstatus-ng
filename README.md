@@ -10,7 +10,7 @@
   <img src="https://raw.githubusercontent.com/lgc-NB2Dev/readme/main/template/plugin.svg" alt="NoneBotPluginText">
 </p>
 
-# NoneBot-Plugin-PicStatus-Ng
+# NoneBot-Plugin-PicStatus
 
 _✨ 运行状态图片版 for NoneBot2 ✨_
 
@@ -19,9 +19,8 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json" alt="uv">
 </a>
 <a href="https://wakatime.com/badge/user/b61b0f9a-f40b-4c82-bc51-0a75c67bfccf/project/bfec6993-aa9e-42fb-9f3e-53a5d4739373">
-  <img src="https://wakatime.com/badge/user/b61b0f9a-f40b-4c82-bc51-0a75c67bfccf/project/bfec6993-aa9e-42fb-9f3e-53a5d4739373.svg" alt="wakatime (lgc2333)">
+  <img src="https://wakatime.com/badge/user/b61b0f9a-f40b-4c82-bc51-0a75c67bfccf/project/bfec6993-aa9e-42fb-9f3e-53a5d4739373.svg" alt="wakatime">
 </a>
-<img src="https://hackatime.hackclub.com/api/v1/badge/U0922T3T2UX/wyf9/nonebot-plugin-picstatus-ng" alt="hackatime (wyf9)">
 
 <br />
 
@@ -29,16 +28,16 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/lgc-NB2Dev/readme/main/template/pyd-v1-or-v2.json" alt="Pydantic Version 1 Or 2" >
 </a>
 <a href="./LICENSE">
-  <img src="https://img.shields.io/github/license/wyf9/nonebot-plugin-picstatus-ng.svg" alt="license">
+  <img src="https://img.shields.io/github/license/lgc-NB2Dev/nonebot-plugin-picstatus.svg" alt="license">
 </a>
-<!-- <a href="https://pypi.python.org/pypi/nonebot-plugin-picstatus">
+
+<a href="https://pypi.python.org/pypi/nonebot-plugin-picstatus">
   <img src="https://img.shields.io/pypi/v/nonebot-plugin-picstatus.svg" alt="pypi">
 </a>
 <a href="https://pypi.python.org/pypi/nonebot-plugin-picstatus">
   <img src="https://img.shields.io/pypi/dm/nonebot-plugin-picstatus" alt="pypi download">
-</a> -->
+</a>
 
-<!--
 <br />
 
 <a href="https://registry.nonebot.dev/plugin/nonebot-plugin-picstatus:nonebot_plugin_picstatus">
@@ -46,17 +45,9 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
 </a>
 <a href="https://registry.nonebot.dev/plugin/nonebot-plugin-picstatus:nonebot_plugin_picstatus">
   <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fnbbdg.lgc2333.top%2Fplugin-adapters%2Fnonebot-plugin-picstatus" alt="Supported Adapters">
-</a> -->
+</a>
 
 </div>
-
-## Fork 说明
-
-由于本项目原作者 lgc2333 存档了项目，而我在安装此插件时遇到了导入错误，故创建本 Fork
-
-不会对项目进行大幅度的修改，仅小功能优化 / Bug 修复
-
-*联系: [Persoanl (Question)](https://wyf9.top/c) / [Team (Chat)](https://wss.moe/c)*
 
 ## 📖 介绍
 
@@ -81,7 +72,7 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
 在 nonebot2 项目的根目录下打开命令行, 输入以下指令即可安装
 
 ```bash
-nb plugin install nonebot-plugin-picstatus-ng
+nb plugin install nonebot-plugin-picstatus
 ```
 
 </details>
@@ -94,7 +85,7 @@ nb plugin install nonebot-plugin-picstatus-ng
 <summary>[推荐] uv</summary>
 
 ```bash
-uv add nonebot-plugin-picstatus-ng
+uv add nonebot-plugin-picstatus
 ```
 
 </details>
@@ -102,7 +93,7 @@ uv add nonebot-plugin-picstatus-ng
 <summary>pip</summary>
 
 ```bash
-pip install nonebot-plugin-picstatus-ng
+pip install nonebot-plugin-picstatus
 ```
 
 </details>
@@ -110,7 +101,7 @@ pip install nonebot-plugin-picstatus-ng
 <summary>pdm</summary>
 
 ```bash
-pdm add nonebot-plugin-picstatus-ng
+pdm add nonebot-plugin-picstatus
 ```
 
 </details>
@@ -118,7 +109,7 @@ pdm add nonebot-plugin-picstatus-ng
 <summary>poetry</summary>
 
 ```bash
-poetry add nonebot-plugin-picstatus-ng
+poetry add nonebot-plugin-picstatus
 ```
 
 </details>
@@ -126,7 +117,7 @@ poetry add nonebot-plugin-picstatus-ng
 <summary>conda</summary>
 
 ```bash
-conda install nonebot-plugin-picstatus-ng
+conda install nonebot-plugin-picstatus
 ```
 
 </details>
@@ -137,7 +128,7 @@ conda install nonebot-plugin-picstatus-ng
 [tool.nonebot]
 plugins = [
     # ...
-    "nonebot_plugin_picstatus_ng"
+    "nonebot_plugin_picstatus"
 ]
 ```
 
@@ -145,21 +136,21 @@ plugins = [
 
 ## ⚙️ 配置
 
-### 见 [.env.example](https://github.com/wyf9/nonebot-plugin-picstatus-ng/blob/master/.env.example)
+### 见 [.env.example](https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus/blob/master/.env.example)
 
 ## 🎨 扩展
 
 想知道如何为插件新增数据源、图片模板与背景图来源的话，请参考下方示例
 
-### 见 [examples/external_example](https://github.com/wyf9/nonebot-plugin-picstatus-ng/blob/master/examples/external_example)
+### 见 [examples/external_example](https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus/blob/master/examples/external_example)
 
 ## 🎉 使用
 
 使用指令 `运行状态`（或者 `状态` / `zt` / `yxzt` / `status`，可修改）来触发插件功能  
 可以在消息后面跟一张图片或者回复一张图片来自定义背景图，默认为随机背景图  
-更多自定义项参见 [配置](https://github.com/wyf9/nonebot-plugin-picstatus-ng/blob/master/.env.example)
+更多自定义项参见 [配置](https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus/blob/master/.env.example)
 
-## 📞 联系 (原项目)
+## 📞 联系
 
 QQ：3076823485  
 Telegram：[@lgc2333](https://t.me/lgc2333)  
@@ -184,7 +175,7 @@ Telegram：[@lgc2333](https://t.me/lgc2333)
 
 - 背景图来源
 
-## 💰 赞助 (原项目)
+## 💰 赞助
 
 **[赞助我](https://blog.lgc2333.top/donate)**
 
@@ -192,18 +183,12 @@ Telegram：[@lgc2333](https://t.me/lgc2333)
 
 ## 📝 更新日志
 
-### 2.2.4 & 2.2.5
-
-- 修复 `ensure_localstore_path_config()` 阻止插件加载
-- actually cannot use os environ bro, just catch it 🤓
-
 ### 2.2.3
 
 - 修复 psutil 新版本的导入错误
 - 现在允许将 `PS_BG_PROVIDER` 直接设置为 URL 来调用外部图片 API *(仅支持 static / 302 返回，不支持 json 返回)*
 - 在使用传统方式获取 Bot 头像失败后尝试直接从 `https://q.qlogo.cn/headimg_dl?dst_uin={bot.self_id}&spec=160` 拉取
-
----
+- 修复 `ensure_localstore_path_config()` 阻止插件加载
 
 ### 2.2.2
 
