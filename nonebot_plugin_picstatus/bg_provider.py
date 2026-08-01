@@ -8,12 +8,12 @@ from collections.abc import AsyncIterable, Callable
 from math import floor
 from pathlib import Path
 from typing import Generic, NamedTuple, ParamSpec, TypeAlias, TypedDict, TypeVar
-from typing_extensions import override
 
 from cookit.common import race
 from cookit.loguru import warning_suppress
 from httpx import AsyncClient, Response
 from nonebot import get_driver, logger
+from typing_extensions import override
 
 from .config import BG_PRELOAD_CACHE_DIR, DEFAULT_BG_PATH, config
 
@@ -69,7 +69,7 @@ def refresh_bg_files():
 
 def bg_provider(name: str | None = None):
     def deco(func: TBP) -> TBP:
-        provider_name = name or func.__name__
+        provider_name = name or getattr(func, "__name__", "")
         if provider_name in registered_bg_providers:
             raise ValueError(f"Duplicate bg provider name `{provider_name}`")
         registered_bg_providers[provider_name] = func

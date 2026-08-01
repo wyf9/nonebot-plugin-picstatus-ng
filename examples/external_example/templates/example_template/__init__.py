@@ -1,5 +1,3 @@
-# ruff: noqa: E402
-
 import json
 from collections import deque
 from pathlib import Path
@@ -8,6 +6,8 @@ from typing import TYPE_CHECKING, Any
 import jinja2 as jj
 from cookit.jinja import make_register_jinja_filter_deco
 from nonebot import get_plugin_config, require
+from pydantic import BaseModel
+
 from nonebot_plugin_picstatus.templates import pic_template
 from nonebot_plugin_picstatus.templates.pw_render import (
     ROUTE_URL,
@@ -16,7 +16,6 @@ from nonebot_plugin_picstatus.templates.pw_render import (
     base_router_group,
     register_global_filter_to,
 )
-from pydantic import BaseModel
 
 # 添加自定义图片模板示例
 # 示例应用例请见 https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus/blob/master/nonebot_plugin_picstatus/templates/default/__init__.py

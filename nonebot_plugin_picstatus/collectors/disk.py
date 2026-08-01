@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import TypeAlias
 
 import psutil
+
 try:
     from psutil._common import sdiskio, sdiskpart  # ty:ignore[unresolved-import]
 except ImportError:

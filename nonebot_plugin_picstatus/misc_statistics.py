@@ -4,7 +4,8 @@ from typing import Any
 
 from httpx import AsyncClient
 from nonebot import get_driver, logger
-from nonebot.adapters import Bot as BaseBot, Event as BaseEvent
+from nonebot.adapters import Bot as BaseBot
+from nonebot.adapters import Event as BaseEvent
 from nonebot.message import event_preprocessor
 from nonebot.typing import T_State
 from nonebot_plugin_uninfo import User, get_interface
@@ -116,8 +117,7 @@ async def cache_bot_avatar(avatar: str, bot: BaseBot, event: BaseEvent, state: T
     img = await _fetch_avatar(avatar)
     if not img:
         logger.warning(
-            f"Failed to fetch avatar from `{avatar}`, "
-            f"trying q.qlogo.cn fallback",
+            f"Failed to fetch avatar from `{avatar}`, trying q.qlogo.cn fallback",
         )
         img = await _fetch_avatar(
             f"https://q.qlogo.cn/headimg_dl?dst_uin={bot.self_id}&spec=160",

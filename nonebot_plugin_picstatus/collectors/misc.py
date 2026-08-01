@@ -73,7 +73,7 @@ async def system_run_time() -> str:
 
 @first_time_collector()
 async def nonebot_version() -> str:
-    return nonebot.__version__ or 'unknown'
+    return nonebot.__version__ or "unknown"
 
 
 @first_time_collector()
@@ -100,9 +100,6 @@ async def python_version() -> str:
 async def system_name():
     system, _, release, version, machine, _ = platform.uname()
     system, release, version = platform.system_alias(system, release, version)
-
-    if system == "Java":
-        _, _, _, (system, release, machine) = platform.java_ver()
 
     if system == "Darwin":
         return f"MacOS {platform.mac_ver()[0]} {machine}"

@@ -38,3 +38,8 @@ packages = ["nonebot_plugin_picstatus"]
 
 [tool.hatch.version]
 path = "nonebot_plugin_picstatus/__init__.py"
+
+[tool.ruff]
+lint.ignore = [
+    'BLE001' # Do not catch blind exception: `Exception`
+]

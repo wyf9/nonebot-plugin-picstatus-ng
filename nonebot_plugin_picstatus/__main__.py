@@ -3,7 +3,9 @@ import asyncio
 from cookit.loguru import warning_suppress
 from cookit.nonebot.alconna import extract_reply_msg
 from nonebot import logger, on_command
-from nonebot.adapters import Bot as BaseBot, Event as BaseEvent, Message as BaseMessage
+from nonebot.adapters import Bot as BaseBot
+from nonebot.adapters import Event as BaseEvent
+from nonebot.adapters import Message as BaseMessage
 from nonebot.matcher import current_bot, current_event, current_matcher
 from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
@@ -18,7 +20,9 @@ from .misc_statistics import bot_avatar_cache, bot_info_cache, cache_bot_avatar
 from .templates import render_current_template
 
 
-def check_empty_arg_rule(arg: BaseMessage = CommandArg()):
+def check_empty_arg_rule(arg: BaseMessage | None = None):
+    if not arg:
+        arg = CommandArg()
     return not arg.extract_plain_text()
 
 

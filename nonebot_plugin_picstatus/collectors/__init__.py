@@ -7,10 +7,10 @@ from collections.abc import Awaitable, Callable
 from contextlib import suppress
 from pathlib import Path
 from typing import Any, Generic, TypeVar
-from typing_extensions import override
 
 from nonebot import logger
 from nonebot_plugin_apscheduler import scheduler
+from typing_extensions import override
 
 from ..config import config
 
@@ -114,7 +114,7 @@ async def enable_collectors(*names: str):
 
 def functional_collector(cls: type[Collector], name: str | None = None):
     def deco(func: TCF) -> TCF:
-        collector_name = name or func.__name__
+        collector_name = name or getattr(func, "__name__", "")
         if not collector_name:
             raise ValueError("name must be provided")
 

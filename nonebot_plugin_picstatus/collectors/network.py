@@ -5,6 +5,7 @@ from typing import TypeAlias
 
 import psutil
 from httpx import AsyncClient, ReadTimeout
+
 try:
     from psutil._common import snetio  # ty:ignore[unresolved-import]
 except ImportError:

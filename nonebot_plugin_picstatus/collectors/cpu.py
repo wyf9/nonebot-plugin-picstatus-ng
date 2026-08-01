@@ -11,8 +11,8 @@ from . import first_time_collector, normal_collector, periodic_collector
 @dataclass
 class CpuFreq:
     current: float | None
-    min: float | None  # noqa: A003
-    max: float | None  # noqa: A003
+    min: float | None
+    max: float | None
 
 
 @first_time_collector()
