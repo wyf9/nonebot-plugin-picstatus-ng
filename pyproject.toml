@@ -39,7 +39,8 @@ packages = ["nonebot_plugin_picstatus"]
 [tool.hatch.version]
 path = "nonebot_plugin_picstatus/__init__.py"
 
-[tool.ruff]
-lint.ignore = [
-    'BLE001' # Do not catch blind exception: `Exception`
+[tool.ruff.lint]
+ignore = [
+    "E402",   # module import not at top: required by NoneBot `require()` pattern
+    "BLE001", # do not catch blind exception: `Exception`
 ]

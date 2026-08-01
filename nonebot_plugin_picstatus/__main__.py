@@ -20,9 +20,7 @@ from .misc_statistics import bot_avatar_cache, bot_info_cache, cache_bot_avatar
 from .templates import render_current_template
 
 
-def check_empty_arg_rule(arg: BaseMessage | None = None):
-    if not arg:
-        arg = CommandArg()
+def check_empty_arg_rule(arg: BaseMessage = CommandArg()):  # ruff: ignore[B008]
     return not arg.extract_plain_text()
 
 
@@ -65,7 +63,7 @@ async def _(bot: BaseBot, event: BaseEvent, state: T_State, msg: OriginalUniMsg)
         and (info := bot_info_cache.get(bot.self_id))
         and info.avatar
     ):
-        await cache_bot_avatar(info.avatar, bot, event, state)
+        await cache_bot_avatar(info.avatar, bot)
 
     async def get_bg():
         with warning_suppress("Failed to fetch image from user message"):

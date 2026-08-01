@@ -1,14 +1,24 @@
 import re
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from cookit import DebugFileWriter, auto_convert_byte, format_timedelta
+from httpx import AsyncClient
+
+from .config import config
 
 if TYPE_CHECKING:
     from .collectors.cpu import CpuFreq
 
 format_time_delta_ps = partial(format_timedelta, day_divider=" ", day_suffix="天")
+
+
+def make_http_client(**kwargs: Any) -> AsyncClient:
+    kwargs.setdefault("follow_redirects", True)
+    kwargs.setdefault("proxy", config.proxy)
+    kwargs.setdefault("timeout", config.ps_req_timeout)
+    return AsyncClient(**kwargs)
 
 
 def match_list_regexp(reg_list: list[str], txt: str) -> re.Match | None:

@@ -2,15 +2,21 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Any
 
-from httpx import AsyncClient
 from nonebot import get_driver, logger
 from nonebot.adapters import Bot as BaseBot
 from nonebot.adapters import Event as BaseEvent
 from nonebot.message import event_preprocessor
-from nonebot.typing import T_State
 from nonebot_plugin_uninfo import User, get_interface
 
 from .config import config
+from .util import make_http_client
+
+try:
+    from nonebot.adapters.onebot.v11 import (  # ty:ignore[unresolved-import]
+        Bot as OBV11Bot,
+    )
+except ImportError:
+    OBV11Bot = None
 
 nonebot_run_time: datetime = datetime.now().astimezone()
 bot_connect_time: dict[str, datetime] = {}
@@ -100,11 +106,7 @@ if config.ps_count_message_sent_event is not True:
 
 
 async def _fetch_avatar(url: str) -> bytes | None:
-    async with AsyncClient(
-        follow_redirects=True,
-        proxy=config.proxy,
-        timeout=config.ps_req_timeout,
-    ) as cli:
+    async with make_http_client() as cli:
         try:
             resp = await cli.get(url)
             resp.raise_for_status()
@@ -113,9 +115,11 @@ async def _fetch_avatar(url: str) -> bytes | None:
             return None
 
 
-async def cache_bot_avatar(avatar: str, bot: BaseBot, event: BaseEvent, state: T_State):
+async def cache_bot_avatar(avatar: str, bot: BaseBot):
     img = await _fetch_avatar(avatar)
-    if not img:
+    # only QQ (OneBot V11) has a known public avatar url to fall back to,
+    # other platforms have no such endpoint for their numeric self_id
+    if (not img) and OBV11Bot and isinstance(bot, OBV11Bot):
         logger.warning(
             f"Failed to fetch avatar from `{avatar}`, trying q.qlogo.cn fallback",
         )

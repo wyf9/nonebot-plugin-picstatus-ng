@@ -16,6 +16,7 @@ from nonebot import get_driver, logger
 from typing_extensions import override
 
 from .config import BG_PRELOAD_CACHE_DIR, DEFAULT_BG_PATH, config
+from .util import make_http_client
 
 if sys.version_info >= (3, 11):
     from asyncio.taskgroups import TaskGroup
@@ -133,11 +134,7 @@ class LoliBGProvider(CoIterator[BgData]):
 
     @override
     async def run_tasks(self):
-        async with AsyncClient(
-            follow_redirects=True,
-            proxy=config.proxy,
-            timeout=config.ps_req_timeout,
-        ) as cli:
+        async with make_http_client() as cli:
             await aio.gather(*(self.task_piece(cli) for _ in range(self.num)))
 
 
@@ -177,11 +174,7 @@ class LoliconBGProvider(CoIterator[BgData]):
                 await self.url_queue.put(x["urls"]["original"])
 
     async def fetch_urls_task_f(self):
-        async with AsyncClient(
-            follow_redirects=True,
-            proxy=config.proxy,
-            timeout=config.ps_req_timeout,
-        ) as cli:
+        async with make_http_client() as cli:
             for x in iter_batch_sizes(self.num, 20):
                 await self.do_fetch_urls_piece(x, cli)
         await self.url_queue.put(None)
@@ -194,10 +187,7 @@ class LoliconBGProvider(CoIterator[BgData]):
 
     @override
     async def run_tasks(self):
-        pixiv_client = AsyncClient(
-            follow_redirects=True,
-            proxy=config.proxy,
-            timeout=config.ps_req_timeout,
+        pixiv_client = make_http_client(
             headers={
                 "User-Agent": (
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -237,11 +227,7 @@ async def none(num: int):
 
 async def _fetch_bg_from_url(url: str, num: int) -> AsyncIterable[BgData]:
     sem = aio.Semaphore(4)
-    async with AsyncClient(
-        follow_redirects=True,
-        proxy=config.proxy,
-        timeout=config.ps_req_timeout,
-    ) as cli:
+    async with make_http_client() as cli:
         queue: aio.Queue[BgData | None] = aio.Queue()
 
         async def fetch_one():

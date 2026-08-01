@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import TypeAlias
 
 import psutil
-from httpx import AsyncClient, ReadTimeout
+from httpx import ReadTimeout
 
 try:
     from psutil._common import snetio  # ty:ignore[unresolved-import]
@@ -12,7 +12,7 @@ except ImportError:
     from psutil._ntuples import snetio
 
 from ..config import TestSiteCfg, config
-from ..util import match_list_regexp
+from ..util import make_http_client, match_list_regexp
 from . import (
     BaseTimeBasedCounterCollector,
     NormalTimeBasedCounterCollector,
@@ -102,10 +102,9 @@ async def network_connection() -> list[NetworkConnectionType]:
 
     async def test_one(site: TestSiteCfg) -> NetworkConnectionType:
         try:
-            async with AsyncClient(
+            async with make_http_client(
                 timeout=config.ps_test_timeout,
                 proxy=config.proxy if site.use_proxy else None,
-                follow_redirects=True,
             ) as client:
                 start = time.time()
                 resp = await client.get(str(site.url))
