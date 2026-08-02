@@ -5,11 +5,9 @@ from typing import TypeAlias
 
 import psutil
 from httpx import ReadTimeout
-
-try:
-    from psutil._common import snetio  # ty:ignore[unresolved-import]
-except ImportError:
-    from psutil._ntuples import snetio
+from psutil._common import (
+    snetio,  # pyright: ignore[reportMissingModuleSource, reportAttributeAccessIssue]
+)
 
 from ..config import TestSiteCfg, config
 from ..util import make_http_client, match_list_regexp

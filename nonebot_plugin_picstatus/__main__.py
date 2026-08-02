@@ -63,7 +63,7 @@ async def _(bot: BaseBot, event: BaseEvent, state: T_State, msg: OriginalUniMsg)
         and (info := bot_info_cache.get(bot.self_id))
         and info.avatar
     ):
-        await cache_bot_avatar(info.avatar, bot)
+        await cache_bot_avatar(info.avatar, bot, event, state)
 
     async def get_bg():
         with warning_suppress("Failed to fetch image from user message"):

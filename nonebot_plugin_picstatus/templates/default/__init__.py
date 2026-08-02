@@ -132,9 +132,9 @@ async def default(collected: dict[str, Any], bg: "BgBytesData", **_) -> bytes:
     add_background_router(router_group, bg)
 
     async with get_new_page() as page:
-        await router_group.apply(page)
-        await page.goto(f"{ROUTE_URL}/")
-        await page.wait_for_selector("body.done")
-        elem = await page.query_selector(".main-background")
+        await router_group.apply(page)  # pyright: ignore[reportArgumentType]
+        await page.goto(f"{ROUTE_URL}/")  # pyright: ignore[reportAttributeAccessIssue]
+        await page.wait_for_selector("body.done")  # pyright: ignore[reportAttributeAccessIssue]
+        elem = await page.query_selector(".main-background")  # pyright: ignore[reportAttributeAccessIssue]
         assert elem
         return await elem.screenshot(type="jpeg")

@@ -87,8 +87,8 @@ async def example_template(collected: dict[str, Any], bg: "BgBytesData", **_):
     add_background_router(router_group, bg)  # 注册背景图片路由
 
     async with get_new_page() as page:
-        await router_group.apply(page)
-        await page.goto(f"{ROUTE_URL}/", wait_until="load")
-        elem = await page.wait_for_selector("main")
+        await router_group.apply(page)  # pyright: ignore[reportArgumentType]
+        await page.goto(f"{ROUTE_URL}/", wait_until="load")  # pyright: ignore[reportAttributeAccessIssue]
+        elem = await page.wait_for_selector("main")  # pyright: ignore[reportAttributeAccessIssue]
         assert elem
         return await elem.screenshot(type="jpeg")

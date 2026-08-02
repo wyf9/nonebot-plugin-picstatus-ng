@@ -142,7 +142,7 @@ plugins = [
 
 想知道如何为插件新增数据源、图片模板与背景图来源的话，请参考下方示例
 
-### 见 [examples/external_example](https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus/blob/master/examples/external_example)
+### 见 [examples/external_example](https://github.com/lgc-NB2Dev/nonebot-plugin-picstatus/tree/master/examples/external_example)
 
 ## 🎉 使用
 
@@ -183,12 +183,11 @@ Telegram：[@lgc2333](https://t.me/lgc2333)
 
 ## 📝 更新日志
 
-### 2.2.3
+### 2.3.0
 
 - 修复 psutil 新版本的导入错误
-- 现在允许将 `PS_BG_PROVIDER` 直接设置为 URL 来调用外部图片 API *(仅支持 static / 302 返回，不支持 json 返回)*
 - 在使用传统方式获取 Bot 头像失败后尝试直接从 `https://q.qlogo.cn/headimg_dl?dst_uin={bot.self_id}&spec=160` 拉取
-- 修复 `ensure_localstore_path_config()` 阻止插件加载
+- 新增 `PS_BG_URL` 配置项，支持通过配置 URL 来获取背景图（需配合 `PS_BG_PROVIDER=url` 使用）
 
 ### 2.2.2
 

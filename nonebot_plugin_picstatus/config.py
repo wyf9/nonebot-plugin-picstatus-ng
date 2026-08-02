@@ -2,19 +2,10 @@ import shutil
 from pathlib import Path
 from typing import Literal
 
-from cookit.nonebot.localstore import ensure_localstore_path_config
-from nonebot import get_plugin_config, logger
+from nonebot import get_plugin_config
 from nonebot.compat import type_validate_python
 from nonebot_plugin_localstore import get_plugin_cache_dir
 from pydantic import AnyHttpUrl, BaseModel, Field
-
-try:
-    ensure_localstore_path_config()
-except RuntimeError:
-    logger.opt(colors=True).warning(
-        "<yellow>localstore path not configured, "
-        "set LOCALSTORE_USE_CWD=True to use current working directory</yellow>",
-    )
 
 CACHE_DIR = get_plugin_cache_dir()
 
@@ -61,6 +52,8 @@ class ConfigModel(BaseModel):
     ps_bg_provider: str = "loli"
     ps_bg_preload_count: int = 2
     ps_bg_lolicon_r18_type: Literal[0, 1, 2] = 0
+
+    ps_bg_url: str | None = None
     ps_bg_local_path: Path = DEFAULT_BG_PATH
     ps_default_avatar: Path = DEFAULT_AVATAR_PATH
     # endregion

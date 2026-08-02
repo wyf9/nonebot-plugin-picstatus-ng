@@ -2,10 +2,14 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Any
 
+from cookit.loguru import log_exception_warning
 from nonebot import get_driver, logger
 from nonebot.adapters import Bot as BaseBot
 from nonebot.adapters import Event as BaseEvent
 from nonebot.message import event_preprocessor
+from nonebot.typing import T_State
+from nonebot_plugin_alconna import image_fetch
+from nonebot_plugin_alconna.uniseg import Image
 from nonebot_plugin_uninfo import User, get_interface
 
 from .config import config
@@ -115,10 +119,19 @@ async def _fetch_avatar(url: str) -> bytes | None:
             return None
 
 
-async def cache_bot_avatar(avatar: str, bot: BaseBot):
-    img = await _fetch_avatar(avatar)
-    # only QQ (OneBot V11) has a known public avatar url to fall back to,
-    # other platforms have no such endpoint for their numeric self_id
+async def cache_bot_avatar(avatar: str, bot: BaseBot, event: BaseEvent, state: T_State):
+    img = None
+    try:
+        img = await image_fetch(event, bot, state, Image(url=avatar))
+    except Exception as e:
+        log_exception_warning(e, f"Failed to get avatar of bot {bot.self_id}")
+
+    if not img:
+        logger.warning(
+            f"Cannot get avatar of bot {bot.self_id}"
+            f" because image_fetch returned None or failed",
+        )
+
     if (not img) and OBV11Bot and isinstance(bot, OBV11Bot):
         logger.warning(
             f"Failed to fetch avatar from `{avatar}`, trying q.qlogo.cn fallback",
@@ -126,9 +139,11 @@ async def cache_bot_avatar(avatar: str, bot: BaseBot):
         img = await _fetch_avatar(
             f"https://q.qlogo.cn/headimg_dl?dst_uin={bot.self_id}&spec=160",
         )
+
     if not img:
         logger.warning(f"Failed to get avatar of bot {bot.self_id}")
-    bot_avatar_cache[bot.self_id] = img
+    else:
+        bot_avatar_cache[bot.self_id] = img
     return img
 
 

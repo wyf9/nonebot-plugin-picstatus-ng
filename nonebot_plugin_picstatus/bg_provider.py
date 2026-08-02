@@ -70,7 +70,7 @@ def refresh_bg_files():
 
 def bg_provider(name: str | None = None):
     def deco(func: TBP) -> TBP:
-        provider_name = name or getattr(func, "__name__", "")
+        provider_name = name or func.__name__
         if provider_name in registered_bg_providers:
             raise ValueError(f"Duplicate bg provider name `{provider_name}`")
         registered_bg_providers[provider_name] = func
@@ -247,14 +247,20 @@ async def _fetch_bg_from_url(url: str, num: int) -> AsyncIterable[BgData]:
             while (x := await queue.get()) is not None:
                 yield x
 
+@bg_provider("url")
+async def url_bg(num: int) -> AsyncIterable[BgData]:
+    if not config.ps_bg_url:
+        logger.warning("PS_BG_URL not set, using none bg provider")
+        async for x in none(num):
+            yield x
+        return
+    async for x in _fetch_bg_from_url(config.ps_bg_url, num):
+        yield x
+
+
 
 async def fetch_bg(num: int) -> AsyncIterable[BgData]:
     provider = config.ps_bg_provider
-    if provider.startswith(("http://", "https://")):
-        async for x in _fetch_bg_from_url(provider, num):
-            yield x
-        return
-
     if provider not in registered_bg_providers:
         logger.warning(
             f"Unknown background provider `{config.ps_bg_provider}`, fallback to local",
