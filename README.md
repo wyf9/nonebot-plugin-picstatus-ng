@@ -41,10 +41,10 @@ _✨ 运行状态图片版 for NoneBot2 ✨_
 <br />
 
 <a href="https://registry.nonebot.dev/plugin/nonebot-plugin-picstatus:nonebot_plugin_picstatus">
-  <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fnbbdg.lgc2333.top%2Fplugin%2Fnonebot-plugin-picstatus" alt="NoneBot Registry">
+  <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fnbbdg.lgck.cc%2Fplugin%2Fnonebot-plugin-picstatus" alt="NoneBot Registry">
 </a>
 <a href="https://registry.nonebot.dev/plugin/nonebot-plugin-picstatus:nonebot_plugin_picstatus">
-  <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fnbbdg.lgc2333.top%2Fplugin-adapters%2Fnonebot-plugin-picstatus" alt="Supported Adapters">
+  <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fnbbdg.lgck.cc%2Fplugin-adapters%2Fnonebot-plugin-picstatus" alt="Supported Adapters">
 </a>
 
 </div>
@@ -177,7 +177,7 @@ Telegram：[@lgc2333](https://t.me/lgc2333)
 
 ## 💰 赞助
 
-**[赞助我](https://blog.lgc2333.top/sponsor)**
+**[赞助我](https://lgck.cc/sponsor)**
 
 感谢大家的赞助！你们的赞助将是我继续创作的动力！
 

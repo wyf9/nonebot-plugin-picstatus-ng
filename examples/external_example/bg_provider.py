@@ -23,6 +23,6 @@ async def lgc_icon(num: int) -> AsyncIterator[BgData]:
         for _ in range(num):
             yield resp_to_bg_data(
                 (
-                    await cli.get("https://blog.lgc2333.top/assets/favicon.png")
+                    await cli.get("https://lgck.cc/assets/lgcuwukii-512x.png")
                 ).raise_for_status(),
             )
