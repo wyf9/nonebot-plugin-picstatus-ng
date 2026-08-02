@@ -1,13 +1,10 @@
 import asyncio
 import time
 from dataclasses import dataclass
-from typing import TypeAlias
+from typing import TYPE_CHECKING, TypeAlias
 
 import psutil
 from httpx import ReadTimeout
-from psutil._common import (
-    snetio,  # pyright: ignore[reportMissingModuleSource, reportAttributeAccessIssue]
-)
 
 from ..config import TestSiteCfg, config
 from ..util import make_http_client, match_list_regexp
@@ -18,6 +15,9 @@ from . import (
     collector,
     normal_collector,
 )
+
+if TYPE_CHECKING:
+    from psutil._ntuples import snetio
 
 
 @dataclass
@@ -45,15 +45,17 @@ NetworkConnectionType: TypeAlias = NetworkConnectionOK | NetworkConnectionError
 
 
 class BaseNetworkIOCollector(
-    BaseTimeBasedCounterCollector[dict[str, snetio], list[NetworkIO]],
+    BaseTimeBasedCounterCollector[dict[str, "snetio"], list[NetworkIO]],
 ):
     async def _calc(
         self,
-        past: dict[str, snetio],
-        now: dict[str, snetio],
+        past: dict[str, "snetio"],
+        now: dict[str, "snetio"],
         time_passed: float,
     ) -> list[NetworkIO]:
-        def calc_one(name: str, past_it: snetio, now_it: snetio) -> NetworkIO | None:
+        def calc_one(
+            name: str, past_it: "snetio", now_it: "snetio"
+        ) -> NetworkIO | None:
             if match_list_regexp(config.ps_ignore_nets, name):
                 # logger.info(f"网卡IO统计 {name} 匹配 {regex.re.pattern}，忽略")
                 return None
@@ -73,21 +75,21 @@ class BaseNetworkIOCollector(
             res.sort(key=lambda x: x.sent + x.recv, reverse=True)
         return res
 
-    async def _get_obj(self) -> dict[str, snetio]:
+    async def _get_obj(self) -> dict[str, "snetio"]:
         return psutil.net_io_counters(pernic=True)
 
 
 @collector("network_io")
 class NormalDiskIOCollector(
     BaseNetworkIOCollector,
-    NormalTimeBasedCounterCollector[dict[str, snetio], list[NetworkIO]],
+    NormalTimeBasedCounterCollector[dict[str, "snetio"], list[NetworkIO]],
 ): ...
 
 
 @collector("network_io_periodic")
 class PeriodicDiskIOCollector(
     BaseNetworkIOCollector,
-    PeriodicTimeBasedCounterCollector[dict[str, snetio], list[NetworkIO]],
+    PeriodicTimeBasedCounterCollector[dict[str, "snetio"], list[NetworkIO]],
 ): ...
 
 

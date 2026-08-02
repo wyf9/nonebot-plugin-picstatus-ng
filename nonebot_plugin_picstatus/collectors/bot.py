@@ -13,13 +13,7 @@ from . import normal_collector
 
 if TYPE_CHECKING:
     from nonebot.adapters import Bot as BaseBot
-
-try:
-    from nonebot.adapters.onebot.v11 import (  # ty:ignore[unresolved-import]
-        Bot as OBV11Bot,
-    )
-except ImportError:
-    OBV11Bot = None
+    from nonebot.adapters.onebot.v11 import Bot as OBV11Bot
 
 
 @dataclass
@@ -33,8 +27,11 @@ class BotStatus:
 
 
 async def get_ob11_msg_num(bot: "BaseBot") -> tuple[int | None, int | None]:
-    if not (config.ps_ob_v11_use_get_status and OBV11Bot and isinstance(bot, OBV11Bot)):
+    if not (config.ps_ob_v11_use_get_status and bot.adapter.get_name() == "OneBot V11"):
         return None, None
+
+    if TYPE_CHECKING:
+        assert isinstance(bot, OBV11Bot)
 
     try:
         bot_stat = (await bot.get_status()).get("stat")

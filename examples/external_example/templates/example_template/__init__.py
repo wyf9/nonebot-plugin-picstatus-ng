@@ -1,3 +1,5 @@
+# noqa: E402
+
 import json
 from collections import deque
 from pathlib import Path
@@ -26,7 +28,7 @@ from pydantic import BaseModel
 
 require("nonebot_plugin_htmlrender")
 
-from nonebot_plugin_htmlrender import get_new_page  # noqa: E402
+from nonebot_plugin_htmlrender import get_new_page
 
 if TYPE_CHECKING:
     from nonebot_plugin_picstatus.bg_provider import BgBytesData
@@ -86,8 +88,8 @@ async def example_template(collected: dict[str, Any], bg: "BgBytesData", **_):
     add_background_router(router_group, bg)  # 注册背景图片路由
 
     async with get_new_page() as page:
-        await router_group.apply(page)  # pyright: ignore[reportArgumentType]
-        await page.goto(f"{ROUTE_URL}/", wait_until="load")  # pyright: ignore[reportAttributeAccessIssue]
-        elem = await page.wait_for_selector("main")  # pyright: ignore[reportAttributeAccessIssue]
+        await router_group.apply(page)
+        await page.goto(f"{ROUTE_URL}/", wait_until="load")
+        elem = await page.wait_for_selector("main")
         assert elem
         return await elem.screenshot(type="jpeg")

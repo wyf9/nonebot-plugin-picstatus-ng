@@ -18,7 +18,7 @@ from .misc_statistics import bot_avatar_cache, bot_info_cache, cache_bot_avatar
 from .templates import render_current_template
 
 
-def check_empty_arg_rule(arg: BaseMessage = CommandArg()):  # ruff: ignore[B008]
+def check_empty_arg_rule(arg: BaseMessage = CommandArg()):
     return not arg.extract_plain_text()
 
 

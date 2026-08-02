@@ -392,7 +392,7 @@ class BgPreloader:
             bg = await self.background_queue.get()
             self.set_defer_preload()
             if (not isinstance(bg, BgFileData)) or (bg := read_cached_bg_file(bg)):
-                return bg  # ty:ignore[invalid-return-type]
+                return bg
 
         logger.error("Unable to get an background image, falling back to local")
         return await get_one_fallback()
@@ -404,7 +404,7 @@ class BgPreloader:
             bg = await self.background_queue.get()
             self.set_defer_preload()
             if (not isinstance(bg, BgFileData)) or (bg := read_cached_bg_file(bg)):
-                return bg  # ty:ignore[invalid-return-type]
+                return bg
 
         # normally all items in queue should be valid
         # if they not, we should fetch
