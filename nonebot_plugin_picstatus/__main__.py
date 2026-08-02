@@ -3,9 +3,7 @@ import asyncio
 from cookit.loguru import warning_suppress
 from cookit.nonebot.alconna import extract_reply_msg
 from nonebot import logger, on_command
-from nonebot.adapters import Bot as BaseBot
-from nonebot.adapters import Event as BaseEvent
-from nonebot.adapters import Message as BaseMessage
+from nonebot.adapters import Bot as BaseBot, Event as BaseEvent, Message as BaseMessage
 from nonebot.matcher import current_bot, current_event, current_matcher
 from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER

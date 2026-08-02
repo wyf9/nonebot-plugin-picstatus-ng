@@ -3,9 +3,9 @@ from collections.abc import Awaitable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypedDict
+from typing_extensions import Protocol, Unpack
 
 from nonebot import logger
-from typing_extensions import Protocol, Unpack
 
 from ..config import config
 

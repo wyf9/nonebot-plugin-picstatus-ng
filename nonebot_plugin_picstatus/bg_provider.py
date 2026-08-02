@@ -7,21 +7,31 @@ from abc import ABC, abstractmethod
 from collections.abc import AsyncIterable, Callable
 from math import floor
 from pathlib import Path
-from typing import Generic, NamedTuple, ParamSpec, TypeAlias, TypedDict, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Generic,
+    NamedTuple,
+    ParamSpec,
+    TypeAlias,
+    TypedDict,
+    TypeVar,
+)
+from typing_extensions import override
 
 from cookit.common import race
 from cookit.loguru import warning_suppress
-from httpx import AsyncClient, Response
 from nonebot import get_driver, logger
-from typing_extensions import override
 
 from .config import BG_PRELOAD_CACHE_DIR, DEFAULT_BG_PATH, config
 from .util import make_http_client
 
+if TYPE_CHECKING:
+    from httpx import AsyncClient, Response
+
 if sys.version_info >= (3, 11):
     from asyncio.taskgroups import TaskGroup
 else:
-    from taskgroup import TaskGroup  # ty:ignore[unresolved-import]
+    from taskgroup import TaskGroup
 
 
 class BgBytesData(NamedTuple):
@@ -90,7 +100,7 @@ def iter_batch_sizes(size: int, max_size: int):
             yield rest_count
 
 
-def resp_to_bg_data(resp: Response):
+def resp_to_bg_data(resp: "Response"):
     return BgBytesData(
         resp.content,
         (resp.headers.get("Content-Type") or DEFAULT_MIME),
@@ -115,27 +125,29 @@ class CoIterator(ABC, Generic[T]):
                 yield x
 
 
-@bg_provider("loli")
-class LoliBGProvider(CoIterator[BgData]):
-    def __init__(self, num: int):
+class BaseUrlBGProvider(CoIterator[BgData]):
+    def __init__(self, num: int, url: str, concurrency: int = 4):
         super().__init__()
         self.num = num
-        self.sem = aio.Semaphore(4)
+        self.url = url
+        self.sem = aio.Semaphore(concurrency)
 
-    async def task_piece(self, cli: AsyncClient):
+    async def task_piece(self, cli: "AsyncClient"):
         async with self.sem:
             with warning_suppress("Failed to fetch image"):
-                x = resp_to_bg_data(
-                    (
-                        await cli.get("https://www.loliapi.com/acg/pe/")
-                    ).raise_for_status(),
-                )
+                x = resp_to_bg_data((await cli.get(self.url)).raise_for_status())
                 await self.queue.put(x)
 
     @override
     async def run_tasks(self):
         async with make_http_client() as cli:
             await aio.gather(*(self.task_piece(cli) for _ in range(self.num)))
+
+
+@bg_provider("loli")
+class LoliBGProvider(BaseUrlBGProvider):
+    def __init__(self, num: int):
+        super().__init__(num, "https://www.loliapi.com/acg/pe/")
 
 
 class LoliconRespDataUrls(TypedDict):
@@ -158,7 +170,7 @@ class LoliconBGProvider(CoIterator[BgData]):
         self.sem = aio.Semaphore(4)
         self.url_queue = aio.Queue[str | None]()
 
-    async def do_fetch_urls_piece(self, num: int, cli: AsyncClient):
+    async def do_fetch_urls_piece(self, num: int, cli: "AsyncClient"):
         with warning_suppress("Failed to fetch urls"):
             resp = await cli.get(
                 "https://api.lolicon.app/setu/v2",
@@ -179,7 +191,7 @@ class LoliconBGProvider(CoIterator[BgData]):
                 await self.do_fetch_urls_piece(x, cli)
         await self.url_queue.put(None)
 
-    async def fetch_image(self, url: str, cli: AsyncClient):
+    async def fetch_image(self, url: str, cli: "AsyncClient"):
         async with self.sem:
             with warning_suppress("Failed to fetch image"):
                 bg = resp_to_bg_data((await cli.get(url)).raise_for_status())
@@ -215,48 +227,22 @@ async def local(num: int):
         )
 
 
-def create_none_bg():
-    return BgBytesData(None, DEFAULT_MIME)
-
-
 @bg_provider()
 async def none(num: int):
     for _ in range(num):
         yield create_none_bg()
 
 
-async def _fetch_bg_from_url(url: str, num: int) -> AsyncIterable[BgData]:
-    sem = aio.Semaphore(4)
-    async with make_http_client() as cli:
-        queue: aio.Queue[BgData | None] = aio.Queue()
-
-        async def fetch_one():
-            async with sem:
-                with warning_suppress("Failed to fetch image from url"):
-                    x = resp_to_bg_data(
-                        (await cli.get(url)).raise_for_status(),
-                    )
-                    await queue.put(x)
-
-        async def run_tasks():
-            await aio.gather(*(fetch_one() for _ in range(num)))
-            await queue.put(None)
-
-        async with TaskGroup() as t:
-            t.create_task(run_tasks())
-            while (x := await queue.get()) is not None:
-                yield x
-
 @bg_provider("url")
-async def url_bg(num: int) -> AsyncIterable[BgData]:
-    if not config.ps_bg_url:
-        logger.warning("PS_BG_URL not set, using none bg provider")
-        async for x in none(num):
-            yield x
-        return
-    async for x in _fetch_bg_from_url(config.ps_bg_url, num):
-        yield x
+class UrlBGProvider(BaseUrlBGProvider):
+    def __init__(self, num: int):
+        if not config.ps_bg_url:
+            raise ValueError("PS_BG_URL is not set")
+        super().__init__(num, config.ps_bg_url)
 
+
+def create_none_bg():
+    return BgBytesData(None, DEFAULT_MIME)
 
 
 async def fetch_bg(num: int) -> AsyncIterable[BgData]:

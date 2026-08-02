@@ -46,7 +46,7 @@ async def get_process_status() -> list[ProcessStatus]:
         return x.cpu
 
     proc_list = cast(
-        "list[ProcessStatus | None | Exception]",
+        "list[ProcessStatus | Exception | None]",
         await asyncio.gather(
             *(parse_one(proc) for proc in psutil.process_iter()),
             return_exceptions=True,

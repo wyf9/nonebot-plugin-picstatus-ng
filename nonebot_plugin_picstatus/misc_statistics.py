@@ -4,8 +4,7 @@ from typing import Any
 
 from cookit.loguru import log_exception_warning
 from nonebot import get_driver, logger
-from nonebot.adapters import Bot as BaseBot
-from nonebot.adapters import Event as BaseEvent
+from nonebot.adapters import Bot as BaseBot, Event as BaseEvent
 from nonebot.message import event_preprocessor
 from nonebot.typing import T_State
 from nonebot_plugin_alconna import image_fetch
@@ -13,14 +12,7 @@ from nonebot_plugin_alconna.uniseg import Image
 from nonebot_plugin_uninfo import User, get_interface
 
 from .config import config
-from .util import make_http_client
-
-try:
-    from nonebot.adapters.onebot.v11 import (  # ty:ignore[unresolved-import]
-        Bot as OBV11Bot,
-    )
-except ImportError:
-    OBV11Bot = None
+from .util import is_3rd_qq_bot, make_http_client
 
 nonebot_run_time: datetime = datetime.now().astimezone()
 bot_connect_time: dict[str, datetime] = {}
@@ -109,16 +101,6 @@ if config.ps_count_message_sent_event is not True:
             send_num[bot.self_id] += 1
 
 
-async def _fetch_avatar(url: str) -> bytes | None:
-    async with make_http_client() as cli:
-        try:
-            resp = await cli.get(url)
-            resp.raise_for_status()
-            return resp.content
-        except Exception:
-            return None
-
-
 async def cache_bot_avatar(avatar: str, bot: BaseBot, event: BaseEvent, state: T_State):
     img = None
     try:
@@ -132,13 +114,17 @@ async def cache_bot_avatar(avatar: str, bot: BaseBot, event: BaseEvent, state: T
             f" because image_fetch returned None or failed",
         )
 
-    if (not img) and OBV11Bot and isinstance(bot, OBV11Bot):
-        logger.warning(
-            f"Failed to fetch avatar from `{avatar}`, trying q.qlogo.cn fallback",
-        )
-        img = await _fetch_avatar(
-            f"https://q.qlogo.cn/headimg_dl?dst_uin={bot.self_id}&spec=160",
-        )
+    if (not img) and is_3rd_qq_bot(bot):
+        logger.warning("Trying q.qlogo.cn fallback")
+        logger.debug(f"{avatar=}")
+        async with make_http_client() as cli:
+            q_url = f"https://q.qlogo.cn/headimg_dl?dst_uin={bot.self_id}&spec=160"
+            try:
+                resp = await cli.get(q_url)
+                resp.raise_for_status()
+                img = resp.content
+            except Exception:
+                logger.warning("Failed to fetch avatar from q.qlogo.cn")
 
     if not img:
         logger.warning(f"Failed to get avatar of bot {bot.self_id}")

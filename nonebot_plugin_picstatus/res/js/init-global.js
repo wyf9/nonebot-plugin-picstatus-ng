@@ -1,1 +1,1 @@
-globalThis.plugins = [];
+globalThis.plugins = []

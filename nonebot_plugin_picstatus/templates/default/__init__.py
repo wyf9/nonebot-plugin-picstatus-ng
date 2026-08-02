@@ -22,7 +22,7 @@ from ..pw_render import (
 
 require("nonebot_plugin_htmlrender")
 
-from nonebot_plugin_htmlrender import get_new_page
+from nonebot_plugin_htmlrender import get_new_page  # noqa: E402
 
 if TYPE_CHECKING:
     from ...bg_provider import BgBytesData
@@ -93,11 +93,11 @@ class TemplateConfig(BaseModel):
     ps_default_use_periodic: bool = True
 
     @field_validator("ps_default_additional_css")
-    def resolve_css_url(cls, v: list[str]):
+    def resolve_css_url(cls, v: list[str]):  # noqa: N805
         return [resolve_file_url(x, {"default/res/css": CSS_PATH}) for x in v]
 
     @field_validator("ps_default_additional_script")
-    def resolve_script_url(cls, v: list[str]):
+    def resolve_script_url(cls, v: list[str]):  # noqa: N805
         return [resolve_file_url(x) for x in v]
 
 

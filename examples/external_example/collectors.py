@@ -1,5 +1,4 @@
 import random
-
 from typing_extensions import override
 
 from nonebot_plugin_picstatus.collectors import (

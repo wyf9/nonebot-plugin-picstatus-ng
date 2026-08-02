@@ -1,3 +1,5 @@
+# ruff: noqa: E402
+
 from nonebot import get_driver, require
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 
@@ -6,8 +8,7 @@ require("nonebot_plugin_alconna")
 require("nonebot_plugin_uninfo")
 require("nonebot_plugin_localstore")
 
-from . import __main__ as __main__
-from . import misc_statistics as misc_statistics
+from . import __main__ as __main__, misc_statistics as misc_statistics
 from .bg_provider import bg_preloader
 from .collectors import (
     enable_collectors,
@@ -62,5 +63,5 @@ __plugin_meta__ = PluginMetadata(
         "nonebot_plugin_alconna",
         "nonebot_plugin_uninfo",
     ),
-    extra={"License": "MIT", "Author": "LgCookie"},
+    extra={"License": "MIT", "Author": "LgCuwukii & wyf9"},
 )

@@ -1,3 +1,3 @@
 declare module globalThis {
-  var plugins: (() => Promise<any>)[];
+  var plugins: (() => Promise<any>)[]
 }

@@ -1,7 +1,6 @@
 from collections.abc import AsyncIterator
 
 from httpx import AsyncClient
-
 from nonebot_plugin_picstatus.bg_provider import BgData, bg_provider, resp_to_bg_data
 from nonebot_plugin_picstatus.config import config
 

@@ -177,7 +177,7 @@ Telegram：[@lgc2333](https://t.me/lgc2333)
 
 ## 💰 赞助
 
-**[赞助我](https://blog.lgc2333.top/donate)**
+**[赞助我](https://blog.lgc2333.top/sponsor)**
 
 感谢大家的赞助！你们的赞助将是我继续创作的动力！
 
@@ -185,9 +185,11 @@ Telegram：[@lgc2333](https://t.me/lgc2333)
 
 ### 2.3.0
 
+将 nonebot-plugin-picstatus-ng 的更改合并至主线，感谢 @wyf9
+
 - 修复 psutil 新版本的导入错误
-- 在使用传统方式获取 Bot 头像失败后尝试直接从 `https://q.qlogo.cn/headimg_dl?dst_uin={bot.self_id}&spec=160` 拉取
-- 新增 `PS_BG_URL` 配置项，支持通过配置 URL 来获取背景图（需配合 `PS_BG_PROVIDER=url` 使用）
+- 新增 `PS_BG_PROVIDER=url`，配置 `PS_BG_URL` 为图片 URL 即可使用外部图片 API 作为背景图来源 (仅支持 static / 302 返回，不支持 json 返回)
+- 在使用传统方式获取 Bot 头像失败后尝试直接从 <https://q.qlogo.cn/headimg_dl?dst_uin={bot.self_id}&spec=160> 拉取
 
 ### 2.2.2
 

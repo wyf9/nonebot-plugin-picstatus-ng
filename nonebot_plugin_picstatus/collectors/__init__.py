@@ -7,10 +7,10 @@ from collections.abc import Awaitable, Callable
 from contextlib import suppress
 from pathlib import Path
 from typing import Any, Generic, TypeVar
+from typing_extensions import override
 
 from nonebot import logger
 from nonebot_plugin_apscheduler import scheduler
-from typing_extensions import override
 
 from ..config import config
 

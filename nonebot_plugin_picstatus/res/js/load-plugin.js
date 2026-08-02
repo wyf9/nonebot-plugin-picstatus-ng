@@ -1,10 +1,10 @@
-(async () => {
+;(async () => {
   for (const plugin of globalThis.plugins) {
     try {
-      await plugin();
+      await plugin()
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
   }
-  document.body.classList.add('done');
-})();
+  document.body.classList.add('done')
+})()

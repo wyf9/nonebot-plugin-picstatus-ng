@@ -2,6 +2,7 @@ import shutil
 from pathlib import Path
 from typing import Literal
 
+from cookit.pyd import model_validator
 from nonebot import get_plugin_config
 from nonebot.compat import type_validate_python
 from nonebot_plugin_localstore import get_plugin_cache_dir
@@ -52,9 +53,8 @@ class ConfigModel(BaseModel):
     ps_bg_provider: str = "loli"
     ps_bg_preload_count: int = 2
     ps_bg_lolicon_r18_type: Literal[0, 1, 2] = 0
-
-    ps_bg_url: str | None = None
     ps_bg_local_path: Path = DEFAULT_BG_PATH
+    ps_bg_url: str | None = None
     ps_default_avatar: Path = DEFAULT_AVATAR_PATH
     # endregion
 
@@ -112,6 +112,12 @@ class ConfigModel(BaseModel):
     ps_proc_cpu_max_100p: bool = False
     # endregion
     # endregion components
+
+    @model_validator(mode="after")
+    def validate_paths(cls, values: dict) -> dict:  # noqa: N805
+        if values.get("ps_bg_provider") == "url" and not values.get("ps_bg_url"):
+            raise ValueError("PS_BG_URL is not set while PS_BG_PROVIDER is 'url'")
+        return values
 
 
 config: ConfigModel = get_plugin_config(ConfigModel)

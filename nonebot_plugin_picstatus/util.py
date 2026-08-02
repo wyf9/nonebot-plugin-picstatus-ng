@@ -4,7 +4,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from cookit import DebugFileWriter, auto_convert_byte, format_timedelta
+from cookit.common import copy_func_arg_annotations
 from httpx import AsyncClient
+from nonebot.adapters import Bot as BaseBot
 
 from .config import config
 
@@ -14,6 +16,7 @@ if TYPE_CHECKING:
 format_time_delta_ps = partial(format_timedelta, day_divider=" ", day_suffix="天")
 
 
+@copy_func_arg_annotations(AsyncClient)
 def make_http_client(**kwargs: Any) -> AsyncClient:
     kwargs.setdefault("follow_redirects", True)
     kwargs.setdefault("proxy", config.proxy)
@@ -37,3 +40,10 @@ def format_cpu_freq(freq: "CpuFreq") -> str:
 
 
 debug = DebugFileWriter(Path.cwd() / "debug", "picstatus")
+
+
+def is_3rd_qq_bot(bot: BaseBot) -> bool:
+    return bool(
+        ((ad := bot.adapter.get_name()) in {"OneBot V11", "Milky"})
+        or (ad == "Satori" and bot.platform in {"onebot", "milky", "llonebot"})
+    )
