@@ -25,6 +25,8 @@ require("nonebot_plugin_htmlrender")
 from nonebot_plugin_htmlrender import get_new_page  # noqa: E402
 
 if TYPE_CHECKING:
+    from playwright.async_api import Page
+
     from ...bg_provider import BgBytesData
 
 RES_PATH = Path(__file__).parent / "res"
@@ -132,6 +134,8 @@ async def default(collected: dict[str, Any], bg: "BgBytesData", **_) -> bytes:
     add_background_router(router_group, bg)
 
     async with get_new_page() as page:
+        if TYPE_CHECKING:
+            assert isinstance(page, Page)
         await router_group.apply(page)
         await page.goto(f"{ROUTE_URL}/")
         await page.wait_for_selector("body.done")
