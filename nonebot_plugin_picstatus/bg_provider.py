@@ -5,7 +5,6 @@ import sys
 import time
 from abc import ABC, abstractmethod
 from collections.abc import AsyncIterable, Callable
-from math import floor
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -18,7 +17,6 @@ from typing import (
 )
 from typing_extensions import override
 
-from cookit.common import race
 from cookit.loguru import warning_suppress
 from nonebot import get_driver, logger
 
@@ -47,13 +45,20 @@ class BgFileData(NamedTuple):
 BgData: TypeAlias = BgBytesData | BgFileData
 
 BGProviderType = Callable[[int], AsyncIterable[BgData]]
+
+
+class RegisteredBGProvider(NamedTuple):
+    factory: BGProviderType
+    no_preload: bool = False
+
+
 T = TypeVar("T")
 TBP = TypeVar("TBP", bound=BGProviderType)
 P = ParamSpec("P")
 
 DEFAULT_MIME = "application/octet-stream"
 
-registered_bg_providers: dict[str, BGProviderType] = {}
+registered_bg_providers: dict[str, RegisteredBGProvider] = {}
 
 
 def get_bg_files() -> list["Path"]:
@@ -78,26 +83,27 @@ def refresh_bg_files():
     BG_FILES = get_bg_files()
 
 
-def bg_provider(name: str | None = None):
+def bg_provider(name: str | None = None, *, no_preload: bool = False):
     def deco(func: TBP) -> TBP:
         provider_name = name or func.__name__
         if provider_name in registered_bg_providers:
             raise ValueError(f"Duplicate bg provider name `{provider_name}`")
-        registered_bg_providers[provider_name] = func
+        registered_bg_providers[provider_name] = RegisteredBGProvider(
+            func,
+            no_preload,
+        )
         return func
 
     return deco
 
 
 def iter_batch_sizes(size: int, max_size: int):
-    if size <= max_size:
-        yield size
-    else:
-        full_sizes = floor(max_size / size)
-        for _ in range(full_sizes):
-            yield max_size
-        if rest_count := full_sizes * max_size:
-            yield rest_count
+    if size <= 0 or max_size <= 0:
+        raise ValueError("Batch size and provider limit must be positive")
+    full_batches, remainder = divmod(size, max_size)
+    yield from (max_size for _ in range(full_batches))
+    if remainder:
+        yield remainder
 
 
 def resp_to_bg_data(resp: "Response"):
@@ -227,7 +233,7 @@ async def local(num: int):
         )
 
 
-@bg_provider()
+@bg_provider(no_preload=True)
 async def none(num: int):
     for _ in range(num):
         yield create_none_bg()
@@ -245,37 +251,37 @@ def create_none_bg():
     return BgBytesData(None, DEFAULT_MIME)
 
 
-async def fetch_bg(num: int) -> AsyncIterable[BgData]:
-    provider = config.ps_bg_provider
-    if provider not in registered_bg_providers:
-        logger.warning(
+def log_provider_exception(message: str) -> None:
+    logger.warning(message)
+    logger.opt(exception=True).debug(message)
+
+
+async def fetch_bg(
+    num: int,
+    *,
+    fallback_on_error: bool = True,
+) -> AsyncIterable[BgData]:
+    provider_name = config.ps_bg_provider
+    provider = registered_bg_providers.get(provider_name)
+    if provider is None:
+        logger.error(
             f"Unknown background provider `{config.ps_bg_provider}`, fallback to local",
         )
         async for x in local(num):
             yield x
         return
 
-    # at least we should return one image (x)
-    # has_img = False
     try:
-        provider = registered_bg_providers[config.ps_bg_provider]
-        async for x in provider(num):
-            # has_img = True
+        async for x in provider.factory(num):
             yield x
     except Exception:
-        logger.exception(
+        if not fallback_on_error:
+            raise
+        log_provider_exception(
             "Error when getting background, fallback to get one local bg",
         )
         async for x in local(1):
             yield x
-    # else:
-    #     if has_img:
-    #         return
-    #     logger.warning(
-    #         "Background provider returned empty iterator, fallback to get one local bg",
-    #     )
-    #     async for x in local(1):
-    #         yield x
 
 
 def cache_bg(bg: BgBytesData):
@@ -310,50 +316,110 @@ async def get_one_fallback() -> BgBytesData:
 
 class BgPreloader:
     def __init__(self, preload_count: int):
-        # if preload_count < 1:
-        #     raise ValueError("preload_count must be greater than or equals 1")
+        if preload_count < 0:
+            raise ValueError("preload_count must be non-negative")
         self.preload_count = preload_count
         self.background_queue = aio.Queue[BgData]()
         self.current_load_task_main: aio.Task | None = None
         self.consumed_in_loading: bool = False
-        self.image_got_signal = aio.Event()
         self.fire_tasks: set[aio.Task] = set()
+        self.preload_retry_limit = config.ps_bg_preload_retry_limit
+        self.preload_failures = 0
+        self.preload_suspended = False
+
+    def routine_preload_allowed(self) -> bool:
+        provider = registered_bg_providers.get(config.ps_bg_provider)
+        return provider is None or not provider.no_preload
+
+    def resume_deferred_preload(self) -> None:
+        if self.preload_suspended:
+            logger.debug("Resume routine background preload after deferred recovery")
+            self.preload_failures = 0
+            self.preload_suspended = False
+
+    def record_routine_preload_result(
+        self,
+        got_candidate: bool,
+        failed: bool,
+    ) -> None:
+        if got_candidate:
+            self.preload_failures = 0
+            return
+
+        if failed:
+            log_provider_exception("Routine background preload failed")
+        else:
+            logger.warning("Routine background preload returned no candidates")
+        self.preload_failures += 1
+        if self.preload_failures >= self.preload_retry_limit:
+            self.preload_suspended = True
+            logger.debug("Routine background preload retry budget exhausted")
 
     # we allow fetch_bg return less image than we require
     async def preload_task(
         self,
         count: int,
         fire: bool = False,
-        fire_done_signal: aio.Event | None = None,
+        fire_request_finished: aio.Event | None = None,
+        fire_result: aio.Future[BgData | None] | None = None,
     ):
         logger.debug(f"Preload task started, will preload {count} images, {fire=}")
+        got_candidate = False
+        failed = False
         try:
-            async for x in fetch_bg(count):
+            async for x in fetch_bg(count, fallback_on_error=fire):
                 logger.debug("Got one image")
+                got_candidate = True
+                if (
+                    fire
+                    and fire_result is not None
+                    and not fire_result.done()
+                    and not (fire_request_finished and fire_request_finished.is_set())
+                ):
+                    fire_result.set_result(x)
+                    continue
                 if self.preload_count > 0 or (
-                    fire_done_signal and fire_done_signal.is_set()
+                    fire_request_finished and fire_request_finished.is_set()
                 ):
                     x = cache_bg(x) if isinstance(x, BgBytesData) else x
                 await self.background_queue.put(x)
-                self.image_got_signal.set()
-                self.image_got_signal.clear()
         except Exception:
-            logger.exception("Unexpected error occurred in preload task")
+            failed = True
         else:
             logger.debug("Preload task finished")
 
         if fire:
+            if failed:
+                log_provider_exception("Fire background retrieval failed")
+            elif not got_candidate:
+                logger.warning("Fire background retrieval returned no candidates")
+            if fire_result is not None and not fire_result.done():
+                fire_result.set_result(None)
             return
-        if (
+
+        self.record_routine_preload_result(got_candidate, failed)
+        if self.preload_suspended:
+            self.current_load_task_main = None
+        elif (
             self.consumed_in_loading
             or self.background_queue.qsize() < self.preload_count
         ):
             self.consumed_in_loading = False
+            self.current_load_task_main = None
             self.start_preload()
         else:
             self.current_load_task_main = None
 
     def start_preload(self, force: bool = False):
+        if self.preload_count == 0:
+            logger.debug("Routine background preload disabled by a zero preload target")
+            return
+        if self.preload_suspended:
+            logger.debug("Routine background preload suspended after retry exhaustion")
+            return
+        if not self.routine_preload_allowed():
+            logger.debug("Routine background preload disabled by provider metadata")
+            return
         count = self.preload_count - self.background_queue.qsize()
         if count <= 0 and not force:
             logger.debug(
@@ -371,33 +437,49 @@ class BgPreloader:
             self.start_preload()
 
     async def _get_on_fire(self) -> BgBytesData:
-        task_done_signal = aio.Event()
+        request_finished = aio.Event()
+        loop = aio.get_running_loop()
+        result: aio.Future[BgData | None] = loop.create_future()
+        timeout_expired = False
+
+        async def timeout_result() -> None:
+            nonlocal timeout_expired
+            await aio.sleep(15)
+            if not result.done():
+                timeout_expired = True
+                result.set_result(None)
+
         fire_task = aio.create_task(
-            self.preload_task(1, fire=True, fire_done_signal=task_done_signal),
+            self.preload_task(
+                1,
+                fire=True,
+                fire_request_finished=request_finished,
+                fire_result=result,
+            ),
         )
-        fire_task.add_done_callback(lambda _: task_done_signal.set())
         fire_task.add_done_callback(lambda _: self.fire_tasks.discard(fire_task))
         self.fire_tasks.add(fire_task)
+        timeout_task = aio.create_task(timeout_result())
         try:
-            await race(
-                # self.image_got_signal.wait(),  # lazy to handle this racing condition now
-                task_done_signal.wait(),
-                aio.sleep(15),
-            )
+            bg = await result
         finally:
-            task_done_signal.set()
-            # fire_task.cancel()  # should we cancel here? i'm letting it cache to queue
+            request_finished.set()
+            timeout_task.cancel()
+            # Do not cancel the task: a late result is retained for the next request.
 
-        if not self.background_queue.empty():
-            bg = await self.background_queue.get()
-            self.set_defer_preload()
-            if (not isinstance(bg, BgFileData)) or (bg := read_cached_bg_file(bg)):
-                return bg
+        if bg is not None and (
+            (not isinstance(bg, BgFileData)) or (bg := read_cached_bg_file(bg))
+        ):
+            return bg
 
-        logger.error("Unable to get an background image, falling back to local")
+        if timeout_expired:
+            logger.warning("Fire background retrieval timed out, falling back to local")
+        elif bg is not None:
+            logger.warning("Fire background retrieval returned an unreadable image")
         return await get_one_fallback()
 
     async def get(self) -> BgBytesData:
+        self.resume_deferred_preload()
         self.set_defer_preload()
 
         while not self.background_queue.empty():

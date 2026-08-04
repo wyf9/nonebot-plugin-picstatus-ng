@@ -2,7 +2,7 @@ import shutil
 from pathlib import Path
 from typing import Literal
 
-from cookit.pyd import model_validator
+from cookit.pyd import field_validator, model_validator
 from nonebot import get_plugin_config
 from nonebot.compat import type_validate_python
 from nonebot_plugin_localstore import get_plugin_cache_dir
@@ -52,6 +52,7 @@ class ConfigModel(BaseModel):
     # region style
     ps_bg_provider: str = "loli"
     ps_bg_preload_count: int = 2
+    ps_bg_preload_retry_limit: int = 3
     ps_bg_lolicon_r18_type: Literal[0, 1, 2] = 0
     ps_bg_local_path: Path = DEFAULT_BG_PATH
     ps_bg_url: str | None = None
@@ -112,6 +113,18 @@ class ConfigModel(BaseModel):
     ps_proc_cpu_max_100p: bool = False
     # endregion
     # endregion components
+
+    @field_validator("ps_bg_preload_count", mode="after")
+    def validate_bg_preload_count(cls, v: int) -> int:  # noqa: N805
+        if v < 0:
+            raise ValueError("PS_BG_PRELOAD_COUNT must be non-negative")
+        return v
+
+    @field_validator("ps_bg_preload_retry_limit", mode="after")
+    def validate_bg_preload_retry_limit(cls, v: int) -> int:  # noqa: N805
+        if v < 0:
+            raise ValueError("PS_BG_PRELOAD_RETRY_LIMIT must be non-negative")
+        return v
 
     @model_validator(mode="after")
     def validate_paths(cls, values: dict) -> dict:  # noqa: N805
